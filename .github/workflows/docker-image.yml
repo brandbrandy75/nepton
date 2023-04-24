@@ -36,8 +36,15 @@ jobs:
           mv linux-amd64/helm /usr/local/bin/helm
           helm version
           
-    - name: Deploy
+    - name: Prepare manifest.yaml  for argo-cd
       run: |
           helm template neptone charts/neptune -n neptone --set neptune.image.tag=${{ github.sha }}
           helm template neptone charts/neptune -n neptone --set neptune.image.tag=${{ github.sha }} > manifests/base/manifest.yaml
-      
+          
+    - name: Commit changes
+      uses: EndBug/add-and-commit@v9
+      with:
+        author_name: hadi saboorimanesh
+        author_email: hadi.saburimanesh@gmail.com
+        message: 'update manifest into base Path'
+        add: 'manifests/base/manifest.yaml'
