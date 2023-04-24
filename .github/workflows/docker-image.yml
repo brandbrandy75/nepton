@@ -29,10 +29,14 @@ jobs:
     - name: test
       run:  ls -ltr
       
-    - name: create helm template
-      uses: hiberbee/github-action-helm@latest
-      run: helm template charts/nepton
-           
-    - name: hadi
-      run:  ls -ltr 
+    - name: Install helm
+      run: |
+          curl -LO https://get.helm.sh/helm-v3.8.0-linux-amd64.tar.gz
+          tar -zxvf helm-v3.8.0-linux-amd64.tar.gz
+          mv linux-amd64/helm /usr/local/bin/helm
+          helm version
+          
+    - name: Deploy
+      run: |
+          helm template charts/nepton 
       
