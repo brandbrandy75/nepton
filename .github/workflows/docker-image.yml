@@ -21,7 +21,7 @@ jobs:
          password: ${{ secrets.DOCKERHUB_PASSWORD }}
     - name: Build the Docker image
       run: |
-           docker build . --file Dockerfile --tag haditsn/nepton:$(date +%s)
-           docker push  haditsn/nepton:$(date +%s)
+           docker build . --file Dockerfile --tag haditsn/nepton:$(date +%M)
+           docker push  haditsn/nepton:$(date +%M)
     - name: test
       run:  ls -ltr
