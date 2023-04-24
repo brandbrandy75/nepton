@@ -39,4 +39,5 @@ jobs:
     - name: Deploy
       run: |
           helm template neptone charts/neptune -n neptone --set neptune.image.tag=${{ github.sha }}
+          helm template neptone charts/neptune -n neptone --set neptune.image.tag=${{ github.sha }} > manifests/base/manifest.yaml
       
