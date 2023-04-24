@@ -38,5 +38,5 @@ jobs:
           
     - name: Deploy
       run: |
-          helm template charts/neptune
+          helm template charts/neptune --set neptone.image.tage=${{ github.sha }}
       
