@@ -44,6 +44,7 @@ jobs:
     - name: Commit changes
       uses: EndBug/add-and-commit@v9
       with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
         author_name: hadi saboorimanesh
         author_email: hadi.saburimanesh@gmail.com
         message: 'update manifest into base Path'
