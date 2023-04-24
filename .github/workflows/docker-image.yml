@@ -38,5 +38,5 @@ jobs:
           
     - name: Deploy
       run: |
-          helm template charts/nepton 
+          helm template charts/neptune
       
