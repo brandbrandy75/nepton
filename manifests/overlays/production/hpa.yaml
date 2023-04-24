@@ -1,0 +1,24 @@
+apiVersion: autoscaling/v2beta2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: neptone-neptune-hpa
+  namespace: neptone
+  labels:
+    app.kubernetes.io/name: neptune
+    app.kubernetes.io/part-of: neptone
+    app.kubernetes.io/created-by: xxxxx
+spec:
+  scaleTargetRef:
+  apiVersion: apps/v1
+  kind: Deployment
+  name:  neptone-neptune
+  minReplicas: 2
+  maxReplicas: 8
+  metrics:
+  - type: Resource
+  resource:
+    name: cpu
+    target:
+      type: Utilization
+      averageUtilization: 90
+

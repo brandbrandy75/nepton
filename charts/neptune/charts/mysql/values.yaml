@@ -15,6 +15,3 @@ secret:
   mysqlDatabase: neptune
   mysqlUser: neptune
   mysqlPassword: neptune
-
-sealedSecrets:
-  enabled: false
