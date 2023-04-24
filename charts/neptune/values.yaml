@@ -3,7 +3,7 @@ neptune:
     replicas: 3
 
   image:
-    repository: jecibah771/nepton
+    repository: haditsn/nepton
     tag: latest
 
   service:
