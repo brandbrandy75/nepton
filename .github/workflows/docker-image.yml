@@ -26,7 +26,7 @@ jobs:
       with:
         content: .
         push: true
-        tags: haditsn/nepton:${{ steps.commit.outputs.short }}
+        tags: haditsn/nepton:${{ github.sha }}
     
     - name: test
       run:  ls -ltr
