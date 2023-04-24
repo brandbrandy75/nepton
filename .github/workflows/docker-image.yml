@@ -14,10 +14,10 @@ jobs:
 
     runs-on: ubuntu-latest
     permissions:
-        actions: read|write|none
-        checks: read|write|none
-        contents: read|write|none
-        deployments: read|write|none
+        actions: read|write
+        checks: read|write
+        contents: read|write|
+        deployments: read|write
         id-token: read|write|none
         issues: read|write|none
         discussions: read|write|none
