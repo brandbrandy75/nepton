@@ -16,17 +16,17 @@ jobs:
     permissions:
         actions: read|write
         checks: read|write
-        contents: read|write|
+        contents: read|write
         deployments: read|write
-        id-token: read|write|none
-        issues: read|write|none
-        discussions: read|write|none
-        packages: read|write|none
-        pages: read|write|none
-        pull-requests: read|write|none
-        repository-projects: read|write|none
-        security-events: read|write|none
-        statuses: read|write|none
+        id-token: read|write
+        issues: read|write
+        discussions: read|write
+        packages: read|write
+        pages: read|write
+        pull-requests: read|write
+        repository-projects: read|write
+        security-events: read|write
+        statuses: read|write
     steps:
     - uses: actions/checkout@v3
     - name: Login to  docker hub
