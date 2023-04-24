@@ -26,9 +26,13 @@ jobs:
            docker build . --file Dockerfile --tag ${{ secrets.DOCKERHUB_USERNAME }}/nepton:${{ github.sha }}
            docker push  ${{ secrets.DOCKERHUB_USERNAME }}/nepton:${{ github.sha }}
            
-    - name: create helm template 
-      uses: hiberbee/github-action-helm@latest
-      run: |
-            helm template charts/nepton 
     - name: test
       run:  ls -ltr
+      
+    - name: create helm template
+      uses: hiberbee/github-action-helm@latest
+      run: helm template charts/nepton
+           
+    - name: hadi
+      run:  ls -ltr 
+      
