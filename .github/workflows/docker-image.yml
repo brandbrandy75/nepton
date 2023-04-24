@@ -20,7 +20,7 @@ jobs:
          username: ${{ secrets.DOCKERHUB_USERNAME }}
          password: ${{ secrets.DOCKERHUB_PASSWORD }}
     - name: Build the Docker image
-      run: docker build . --file Dockerfile  haditsn/nepton:$(date +%s)
+      run: docker build . --file Dockerfile --tag haditsn/nepton:$(date +%s)
     - name: Docker Push
       run: docker push  haditsn/nepton:$(date +%s)
     - name: test
