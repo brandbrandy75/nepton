@@ -25,7 +25,7 @@ jobs:
       with:
         content: .
         push: true
-        tags: haditsn/nepton:$(date +%M)
+        tags: haditsn/nepton:${{ steps.commit.outputs.short }}
     
     - name: test
       run:  ls -ltr
