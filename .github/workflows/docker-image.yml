@@ -48,3 +48,4 @@ jobs:
         commit: "--signoff"
         committer_name: "GHA"
         message: "[AUTO] Converting data"
+        github_token: ${{ secrets.GITHUB_TOKEN }}
