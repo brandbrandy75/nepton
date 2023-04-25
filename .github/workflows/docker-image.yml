@@ -5,13 +5,15 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
+    
+
 
 jobs:
 
   build:
 
     runs-on: ubuntu-latest
-
+    permissions: write-all
     steps:
     - uses: actions/checkout@v3
     - name: Login to  docker hub
@@ -23,8 +25,8 @@ jobs:
       env:
         commit_id: ${{ github.sha }}
       run: |
-           docker build . --file Dockerfile --tag ${{ secrets.DOCKERHUB_USERNAME }}/nepton:${{ github.sha }}
-           docker push  ${{ secrets.DOCKERHUB_USERNAME }}/nepton:${{ github.sha }}
+        #  docker build . --file Dockerfile --tag ${{ secrets.DOCKERHUB_USERNAME }}/nepton:${{ github.sha }}
+        #   docker push  ${{ secrets.DOCKERHUB_USERNAME }}/nepton:${{ github.sha }}
            
     - name: test
       run:  ls -ltr
@@ -36,7 +38,16 @@ jobs:
           mv linux-amd64/helm /usr/local/bin/helm
           helm version
           
-    - name: Deploy
+    - name: Prepare manifest.yaml  for argo-cd
       run: |
           helm template neptone charts/neptune -n neptone --set neptune.image.tag=${{ github.sha }}
-      
+          helm template neptone charts/neptune -n neptone --set neptune.image.tag=${{ github.sha }} > manifests/base/manifest.yaml
+          
+    - name: Add & Commit
+      uses: EndBug/add-and-commit@v9.1.1
+      with:
+        add: "."
+        commit: "--signoff"
+        committer_name: "GHA"
+        message: "[AUTO] Converting data"
+        github_token: ${{ secrets.GIT_TOKEN }}

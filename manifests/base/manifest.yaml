@@ -1,13 +1,43 @@
 ---
+# Source: neptune/charts/mysql/templates/secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: neptone-mysql-secret
+  namespace: neptone
+  labels:
+    app.kubernetes.io/name: mysql
+    app.kubernetes.io/part-of: neptone
+    app.kubernetes.io/created-by: xxxxx
+type: Opaque
+data:
+  MYSQL_ROOT_PASSWORD: cm9vdA==
+  MYSQL_DATABASE: bmVwdHVuZQ==
+  MYSQL_USER: bmVwdHVuZQ==
+  MYSQL_PASSWORD: bmVwdHVuZQ==
+---
+# Source: neptune/templates/secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: neptone-neptune-secret
+  namespace: neptone
+  labels:
+    app.kubernetes.io/name: neptune
+    app.kubernetes.io/part-of: neptone
+    app.kubernetes.io/created-by: xxxxx
+data:
+  NEPTUNE_API_DATABASE_URI: bXlzcWwrcHlteXNxbDovL25lcHR1bmU6bmVwdHVuZUBuZXB0b25lLW15c3FsOjMzMDYvbmVwdHVuZQ==
+---
 # Source: neptune/templates/configmap.yaml
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: neptune-neptune-config
-  namespace: neptune
+  name: neptone-neptune-config
+  namespace: neptone
   labels:
     app.kubernetes.io/name: neptune
-    app.kubernetes.io/part-of: neptune
+    app.kubernetes.io/part-of: neptone
     app.kubernetes.io/created-by: xxxxx
 data:
   NEPTUNE_API_ENV: production
@@ -18,18 +48,18 @@ data:
 apiVersion: v1
 kind: Service
 metadata:
-  name: neptune-mysql
-  namespace: neptune
+  name: neptone-mysql
+  namespace: neptone
   labels:
     app.kubernetes.io/name: mysql
-    app.kubernetes.io/part-of: neptune
+    app.kubernetes.io/part-of: neptone
     app.kubernetes.io/created-by: xxxxx
 spec:
   type: ClusterIP
   clusterIP: None
   selector:
     app.kubernetes.io/name: mysql
-    app.kubernetes.io/part-of: neptune
+    app.kubernetes.io/part-of: neptone
     app.kubernetes.io/created-by: xxxxx
   ports:
     - name: mysql
@@ -40,17 +70,17 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: neptune-neptune
-  namespace: neptune
+  name: neptone-neptune
+  namespace: neptone
   labels:
     app.kubernetes.io/name: neptune
-    app.kubernetes.io/part-of: neptune
+    app.kubernetes.io/part-of: neptone
     app.kubernetes.io/created-by: xxxxx
 spec:
   type: ClusterIP
   selector:
     app.kubernetes.io/name: neptune
-    app.kubernetes.io/part-of: neptune
+    app.kubernetes.io/part-of: neptone
     app.kubernetes.io/created-by: xxxxx
   ports:
     - name: http
@@ -61,38 +91,38 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: neptune-neptune
-  namespace: neptune
+  name: neptone-neptune
+  namespace: neptone
   labels:
     app.kubernetes.io/name: neptune
-    app.kubernetes.io/part-of: neptune
+    app.kubernetes.io/part-of: neptone
     app.kubernetes.io/created-by: xxxxx
 spec:
   replicas: 3
   selector:
     matchLabels:
       app.kubernetes.io/name: neptune
-      app.kubernetes.io/part-of: neptune
+      app.kubernetes.io/part-of: neptone
       app.kubernetes.io/created-by: xxxxx
   template:
     metadata:
       labels:
         app.kubernetes.io/name: neptune
-        app.kubernetes.io/part-of: neptune
+        app.kubernetes.io/part-of: neptone
         app.kubernetes.io/created-by: xxxxx
     spec:
       containers:
         - name: neptune
-          image: xxxxx/neptune:latest
+          image: haditsn/nepton:b4c965f42b76a90502eb7026ffb439cbefe54a5a
           ports:
             - name: http
               containerPort: 8080
           envFrom:
             - configMapRef:
-                name: neptune-neptune-config
+                name: neptone-neptune-config
                 optional: true
             - secretRef:
-                name: neptune-neptune-secret
+                name: neptone-neptune-secret
           livenessProbe:
             initialDelaySeconds: 1
             periodSeconds: 3
@@ -104,29 +134,54 @@ spec:
             tcpSocket:
               port: 8080
 ---
+# Source: neptune/templates/hpa.yml
+apiVersion: autoscaling/v2beta2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: neptone-neptune-hpa
+  namespace: neptone
+  labels:
+    app.kubernetes.io/name: neptune
+    app.kubernetes.io/part-of: neptone
+    app.kubernetes.io/created-by: xxxxx
+spec:
+  scaleTargetRef:
+  apiVersion: apps/v1
+  kind: Deployment
+  name:  neptone-neptune
+  minReplicas: 1
+  maxReplicas: 5
+  metrics:
+  - type: Resource
+  resource:
+    name: cpu
+    target:
+      type: Utilization
+      averageUtilization: 50
+---
 # Source: neptune/charts/mysql/templates/statefulset.yaml
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: neptune-mysql
-  namespace: neptune
+  name: neptone-mysql
+  namespace: neptone
   labels:
     app.kubernetes.io/name: mysql
-    app.kubernetes.io/part-of: neptune
+    app.kubernetes.io/part-of: neptone
     app.kubernetes.io/created-by: xxxxx
 spec:
   replicas: 1
   selector:
     matchLabels:
       app.kubernetes.io/name: mysql
-      app.kubernetes.io/part-of: neptune
+      app.kubernetes.io/part-of: neptone
       app.kubernetes.io/created-by: xxxxx
-  serviceName: neptune-mysql
+  serviceName: neptone-mysql
   template:
     metadata:
       labels:
         app.kubernetes.io/name: mysql
-        app.kubernetes.io/part-of: neptune
+        app.kubernetes.io/part-of: neptone
         app.kubernetes.io/created-by: xxxxx
     spec:
       containers:
@@ -134,9 +189,9 @@ spec:
           image: mysql:8
           envFrom:
             - secretRef:
-                name: neptune-mysql-secret
+                name: neptone-mysql-secret
           volumeMounts:
-            - name: neptune-mysql-data
+            - name: neptone-mysql-data
               mountPath: /var/lib/mysql
           livenessProbe:
             initialDelaySeconds: 1
@@ -157,82 +212,10 @@ spec:
                   -e "select version();"
   volumeClaimTemplates:
     - metadata:
-        name: neptune-mysql-data
+        name: neptone-mysql-data
       spec:
         accessModes:
           - ReadWriteOnce
         resources:
           requests:
             storage: 20Gi
----
-# Source: neptune/templates/ingress.yaml
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: neptune-neptune
-  namespace: neptune
-  labels:
-    app.kubernetes.io/name: neptune
-    app.kubernetes.io/part-of: neptune
-    app.kubernetes.io/created-by: xxxxx
-spec:
-  rules:
-    - host: neptune.20302040.xyz
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: neptune-neptune
-                port:
-                  name: http
----
-# Source: neptune/charts/mysql/templates/tests/test.yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: neptune-mysql-test
-  namespace: neptune
-  labels:
-    app.kubernetes.io/name: mysql
-    app.kubernetes.io/part-of: neptune
-    app.kubernetes.io/created-by: xxxxx
-  annotations:
-    helm.sh/hook: test
-spec:
-  restartPolicy: Never
-  containers:
-    - name: mysql
-      image: mysql:8
-      envFrom:
-        - secretRef:
-            name: neptune-mysql-secret
-      command:
-        - mysql
-        - -h
-        - neptune-mysql
-        - -u$(MYSQL_USER)
-        - -p$(MYSQL_PASSWORD)
-        - -e
-        - "select version();"
----
-# Source: neptune/templates/tests/test.yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: neptune-neptune-test
-  namespace: neptune
-  labels:
-    app.kubernetes.io/name: neptune
-    app.kubernetes.io/part-of: neptune
-    app.kubernetes.io/created-by: xxxxx
-  annotations:
-    helm.sh/hook: test
-spec:
-  restartPolicy: Never
-  containers:
-    - name: neptune
-      image: curlimages/curl:latest
-      args:
-        - http://neptune-neptune:80/api/v1/countries
