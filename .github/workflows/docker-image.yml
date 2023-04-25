@@ -25,8 +25,8 @@ jobs:
       env:
         commit_id: ${{ github.sha }}
       run: |
-        #  docker build . --file Dockerfile --tag ${{ secrets.DOCKERHUB_USERNAME }}/nepton:${{ github.sha }}
-        #   docker push  ${{ secrets.DOCKERHUB_USERNAME }}/nepton:${{ github.sha }}
+           docker build . --file Dockerfile --tag ${{ secrets.DOCKERHUB_USERNAME }}/nepton:${{ github.sha }}
+           docker push  ${{ secrets.DOCKERHUB_USERNAME }}/nepton:${{ github.sha }}
            
     - name: test
       run:  ls -ltr
