@@ -113,7 +113,7 @@ spec:
     spec:
       containers:
         - name: neptune
-          image: haditsn/nepton:13278c9cc4c3c1c2782573dfdf3713b677c4fbea
+          image: haditsn/nepton:0a6f12dc23a85354e975d887b73f942fa2966bc2
           ports:
             - name: http
               containerPort: 8080
